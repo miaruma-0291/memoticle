@@ -1,0 +1,386 @@
+html {
+  font-size: 62.5%
+}
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+
+  img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .container {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    /* background: linear-gradient(135deg, #059aaa 0%, #059aaa 5%, #fff 5%, #fff 100%); */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .container::before {
+    content: "";
+    position: absolute;
+    top: -80px;
+    left: -80px;
+    border: 70px solid transparent;
+    border-left: 70px solid #059aaa;
+    transform: rotate(-135deg);
+  }
+  
+  @media (max-width: 767.98px) {
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -90px;
+      left: -90px;
+      border: 70px solid transparent;
+      border-left: 70px solid #059aaa;
+      transform: rotate(-135deg);
+    }
+  }
+
+  .container h1 {
+    margin: 20px 0 0;
+    font-size: 3rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 767.98px) {
+    .container h1 {
+      margin: 25px 0 0;
+      font-size: 2.5rem;
+    }
+  }
+  
+  @media (max-width: 767.98px) {
+    .container h1::after {
+      width: 70px;
+    }
+  }
+
+  .mainFormBox {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 15px;
+    padding: 0 10px;
+  }
+  
+  @media (max-width: 767.98px) {
+    .mainFormBox {
+      display: block;
+      padding: 0 10px;
+    }
+  }
+
+  .searchForm {
+    width: 100%;
+    max-width: 658px;
+    padding: 10px 20px;
+    border: 2px solid #ddd;
+    border-radius: 35px;
+    -webkit-appearance: none;
+    letter-spacing: 0.0625rem;
+    box-sizing: border-box;
+  }
+  
+  @media (max-width: 767.988px) {
+    .searchForm {
+      max-width: 100%;
+      padding: 9px 15px;
+    }
+  }
+
+  .separateLine {
+    position: relative;
+    height: 3px;
+    margin: 30px 0;
+  }
+
+  .separateLine::before {
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #ccc;
+  }
+
+  .separateLine::after {
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background-color: #059aaa;
+  }
+  
+  .articleBlock {
+    margin-top: 30px;
+  }
+
+  .article {
+    position: relative;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fefefe;
+  }
+  
+  .article:nth-child(n+2) {
+    margin-top: 20px;
+  }
+  
+  .article h3 {
+    margin: 0 0 10px;
+    padding-right: 100px;
+    font-size: 1.8rem;
+  }
+  
+  @media (max-width: 767.988px) {
+    .article h3 {
+      padding-right: 80px;
+      font-size: 1.6rem;
+    }
+  }
+  
+  .article p {
+    margin: 0;
+    white-space: pre-wrap;
+    font-size: 1.5rem;
+  }
+  
+  @media (max-width: 767.988px) {
+    .article p {
+      font-size: 1.4rem;
+    }
+  }
+  
+  .deleteBtn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 35px;
+    height: 35px;
+    background-color: #008e9d;
+    color: #fff;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0 0 3px 1px;
+    appearance: none;
+    border-radius: 5px;
+    transition: .4s;
+  }
+  
+  @media (min-width: 768px) {
+    .deleteBtn:hover {
+      border-radius: 50px;
+      transition: .4s;
+    }
+  }
+  
+  @media (max-width: 767.988px) {
+    .deleteBtn {
+      display: block;
+      width: 30px;
+      height: 30px;
+      font-size: 3rem;
+      line-height: .8;
+      padding: 0 0 10px 0;
+    }
+  }
+  
+  .editBtn {
+    position: absolute;
+    top: 12px;
+    right: 57px;
+    width: 35px;
+    height: 35px;
+    background-color: #008e9d;
+    color: #fff;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 6px;
+    appearance: none;
+    border-radius: 5px;
+    transition: .4s;
+  }
+  
+  @media (min-width: 768px) {
+    .editBtn:hover {
+      border-radius: 50px;
+      transition: .4s;
+    }
+  }
+  
+  @media (max-width: 767.988px) {
+    .editBtn {
+      right: 50px;
+      width: 30px;
+      height: 30px;
+      padding: 4px;
+    }
+  }
+
+  /*modal window
+  ==============================*/
+  .modalBtn {
+    min-width: 125px;
+    padding: 4px 20px 5px;
+    background-color: #059aaa;
+    color: #fff;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 1.6rem;
+    font-weight: bold;
+    border: 1px solid #059aaa;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    transition: .3s;
+  }
+  
+  @media (min-width: 768px) {
+    .modalBtn:hover {
+      background-color: #fff;
+      color: #059aaa;
+      transition: .3s;
+    }
+  }
+  
+  @media (max-width: 767.988px) {
+    .modalBtn {
+      width: 100%;
+      margin-top: 15px;
+    }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 50px 60px 25px 50px;
+    border-radius: 8px;
+    min-width: 600px;
+    position: relative;
+  }
+
+  @media (max-width: 767.98px) {
+    .modal-content {
+      min-width: auto;
+      padding: 25px;
+    }
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: -4px;
+    right: 7px;
+    color: #333;
+    font-size: 5.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: .3s;
+  }
+  
+  @media (min-width: 768px) {
+    .close-btn:hover {
+      transform: rotate(90deg);
+      transition: .3s;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .close-btn {
+      top: 20px;
+      right: 6px;
+      font-size: 5rem;
+      line-height: .5;
+    }
+  }
+  
+  .modal-content form input {
+    min-width: 300px;
+    width: 100%;
+    padding: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 767.98px) {
+    .modal-content form input {
+      min-width: auto;
+      width: 90%;
+    }
+  }
+
+  .modal-content form textarea {
+    min-width: 300px;
+    width: 100%;
+    margin-top: 15px;
+    padding: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 767.98px) {
+    .modal-content form textarea {
+      min-width: auto;
+    }
+  }
+  
+  .modal-content form button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    background-color: #059aaa;
+    color: #fff;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  
+  @media (min-width: 768px) {
+    .modal-content form button:hover {
+      background-color: #047885;
+      transition: .2s;
+    }
+  }
+  /*============================*/
