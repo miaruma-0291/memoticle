@@ -20,7 +20,7 @@
     </div>
 
     <!-- モーダルウィンドウ -->
-    <div v-if="showModal" class="modal-overlay">
+    <div v-if="showModal" class="modal-overlay" @click.self="closeModal"> <!-- オーバーレイ自身をクリックしたときだけモーダルを閉じる -->
       <div class="modal-content">
         <button @click="closeModal" class="close-btn">×</button>
         <ArticleForm
