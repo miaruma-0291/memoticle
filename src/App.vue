@@ -1,41 +1,61 @@
 <template>
-  <div class="container">
-
-    <h1>Memo-ticle</h1>
-
-    <div class="separateLine"></div>
-
-    <div class="mainFormBox">
-      <!-- 検索フォーム -->
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="検索ワードを入力"
-        class="searchForm border p-2 mb-4 w-full"
-      />
-      
-      <button @click="openAddModal" class="modalBtn bg-green-500 text-white px-4 py-2 mb-4">
-        記事を追加
-      </button>
-    </div>
-
-    <!-- モーダルウィンドウ -->
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal"> <!-- オーバーレイ自身をクリックしたときだけモーダルを閉じる -->
-      <div class="modal-content">
-        <button @click="closeModal" class="close-btn">×</button>
-        <ArticleForm
-          :initialArticle="currentArticle"
-          :isEdit="editingIndex !== null"
-          @submitArticle="handleArticleSubmit"
-        />
+  <div class="wrapper">
+    <!-- サイドバー -->
+    <aside :class="['sidebar', { open: isSidebarOpen }]">
+      <div class="channel-header">
+        <h2>Channel</h2>
+        <button @click="addChannel" class="add-channel">＋</button>
       </div>
-    </div>
+      <ul class="channel-list">
+        <li
+          v-for="(channel, index) in channels"
+          :key="index"
+          :class="{ active: currentChannel === channel.id }"
+          @click="selectChannel(channel.id)"
+        >
+          {{ channel.name }}
+        </li>
+      </ul>
+    </aside>
 
-    <ArticleList
-      :articles="filteredArticles"
-      @removeArticle="removeArticle"
-      @editArticle="openEditModal"
-    />
+    <!-- ハンバーガーボタン（SP表示用） -->
+    <button class="hamburger" @click="toggleSidebar">☰</button>
+
+    <!-- メインコンテンツ -->
+    <div class="container">
+      <h1>Memo-ticle</h1>
+      <div class="separateLine"></div>
+
+      <div class="mainFormBox">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="検索ワードを入力"
+          class="searchForm border p-2 mb-4 w-full"
+        />
+        <button @click="openAddModal" class="modalBtn bg-green-500 text-white px-4 py-2 mb-4">
+          記事を追加
+        </button>
+      </div>
+
+      <!-- モーダルウィンドウ -->
+      <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-content">
+          <button @click="closeModal" class="close-btn">×</button>
+          <ArticleForm
+            :initialArticle="currentArticle"
+            :isEdit="editingIndex !== null"
+            @submitArticle="handleArticleSubmit"
+          />
+        </div>
+      </div>
+
+      <ArticleList
+        :articles="filteredArticles"
+        @removeArticle="removeArticle"
+        @editArticle="openEditModal"
+      />
+    </div>
   </div>
 </template>
 
@@ -44,11 +64,23 @@ import { ref, computed, onMounted, watch } from 'vue'
 import ArticleForm from './components/ArticleForm.vue'
 import ArticleList from './components/ArticleList.vue'
 
+// サイドバー開閉状態
+const isSidebarOpen = ref(false)
+
+// チャンネル管理
+const channels = ref([
+  { id: 1, name: '一般', articles: [] },
+  { id: 2, name: '仕事', articles: [] },
+  { id: 3, name: '旅行', articles: [] },
+])
+const currentChannel = ref(channels.value[0].id)
+
+// 記事の状態
 const articles = ref([])
 const showModal = ref(false)
 const editingIndex = ref(null)
 const currentArticle = ref({ title: '', content: '' })
-const searchQuery = ref('') // 検索ワードを保持
+const searchQuery = ref('')
 
 // 初回マウント時にローカルストレージから読み込む
 onMounted(() => {
@@ -58,7 +90,7 @@ onMounted(() => {
   }
 })
 
-// articles が更新されるたびにローカルストレージへ保存
+// 記事が更新されるたびに保存
 watch(articles, (newVal) => {
   localStorage.setItem('articles', JSON.stringify(newVal))
 }, { deep: true })
@@ -101,18 +133,36 @@ const toHiragana = (str) => {
   )
 }
 
-// 検索結果に応じたフィルタリング処理
+// 検索フィルター
 const filteredArticles = computed(() => {
   // 検索クエリをひらがな＋小文字化して保持
   const query = toHiragana(searchQuery.value.toLowerCase())
-
-  // 記事一覧をフィルタリング
   return articles.value.filter(article => {
     const title = toHiragana(article.title.toLowerCase())
     const content = toHiragana(article.content.toLowerCase())
     return title.includes(query) || content.includes(query)
   })
 })
+
+// チャンネルを追加
+const addChannel = () => {
+  const name = prompt('新しいチャンネル名を入力してください')
+  if (!name) return
+  const id = Date.now()
+  channels.value.push({ id, name, articles: [] })
+  currentChannel.value = id
+}
+
+// チャンネルを切り替え
+const selectChannel = (id) => {
+  currentChannel.value = id
+  isSidebarOpen.value = false
+}
+
+// サイドバーの表示・非表示を切り替え
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
 </script>
 
 <style src="./assets/style.css"></style>

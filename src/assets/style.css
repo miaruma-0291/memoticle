@@ -6,7 +6,6 @@ html {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
     margin: 0;
-    padding: 20px;
     color: #333;
   }
 
@@ -36,6 +35,12 @@ html {
     border: 70px solid transparent;
     border-left: 70px solid #059aaa;
     transform: rotate(-135deg);
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      margin: 20px auto;
+    }
   }
   
   @media (max-width: 767.98px) {
@@ -381,6 +386,112 @@ html {
     .modal-content form button:hover {
       background-color: #047885;
       transition: .2s;
+    }
+  }
+  /*============================*/
+
+
+  /*channel side bar
+  ==============================*/
+  .wrapper {
+    display: flex;
+  }
+  .sidebar {
+    width: 240px;
+    background-color: #eee;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100vh;
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    transition: transform 0.3s ease-in-out;
+  }
+  .sidebar:not(.open) {
+    transform: translateX(-100%);
+  }
+  .channel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0 20px;
+    font-size: 1.6rem;
+  }
+  .channel-list li {
+    list-style: none;
+    padding: 8px 12px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .channel-list li.active {
+    background-color: #059aaa;
+    color: white;
+    font-weight: bold;
+  }
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 0px 9px;
+    color: #059aaa;
+    line-height: 1.5;
+    font-size: 3rem;
+    background: #fff;
+    border: 2px solid #059aaa;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 20;
+  }
+  .add-channel {
+    padding: 0 6px;
+    color: #fff;
+    line-height: 1.6;
+    font-size: 2rem;
+    font-weight: bold;
+    background: #059aaa;
+    border: 2px solid #059aaa;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: .2s;
+  }
+
+  @media (min-width: 768px) {
+    .sidebar {
+      transform: translateX(0) !important;
+      position: static;
+    }
+    .hamburger {
+      display: none;
+    }
+    .add-channel:hover {
+      color: #059aaa;
+      background: #fff;
+      transition: .2s;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .hamburger {
+      display: block;
+    }
+    .wrapper {
+      padding-left: 0;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+    }  
+    .container {
+      margin-left: 0 !important;
+      padding: 20px;
+      width: 100%;
     }
   }
   /*============================*/
