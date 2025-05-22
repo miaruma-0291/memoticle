@@ -19,7 +19,12 @@
     </aside>
 
     <!-- ハンバーガーボタン（SP表示用） -->
-    <button class="hamburger" @click="toggleSidebar">☰</button>
+    <button
+      class="hamburger"
+      :class="{ active: isSidebarOpen }" 
+      @click="toggleSidebar">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
 
     <!-- メインコンテンツ -->
     <div class="container">
