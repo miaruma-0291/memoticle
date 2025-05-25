@@ -8,11 +8,18 @@
       </div>
       <ul class="channel-list">
         <li
-          v-for="(channel, index) in channels"
-          :key="index"
+          v-for="channel in channels"
+          :key="channel.id"
           :class="{ active: currentChannel === channel.id }"
           @click="selectChannel(channel.id)"
         >
+        <button
+          class="delete-channel"
+          @click.stop="deleteChannel(channel.id)"
+          title="チャンネルを削除"
+        >
+          ×
+        </button>
           {{ channel.name }}
         </li>
       </ul>
@@ -21,8 +28,9 @@
     <!-- ハンバーガーボタン（SP表示用） -->
     <button
       class="hamburger"
-      :class="{ active: isSidebarOpen }" 
-      @click="toggleSidebar">
+      :class="{ active: isSidebarOpen }"
+      @click="toggleSidebar"
+    >
       <span class="bar"></span><span class="bar"></span><span class="bar"></span>
     </button>
 
@@ -69,45 +77,67 @@ import { ref, computed, onMounted, watch } from 'vue'
 import ArticleForm from './components/ArticleForm.vue'
 import ArticleList from './components/ArticleList.vue'
 
-// サイドバー開閉状態
 const isSidebarOpen = ref(false)
-
-// チャンネル管理
-const channels = ref([
-  { id: 1, name: '一般', articles: [] },
-  { id: 2, name: '仕事', articles: [] },
-  { id: 3, name: '旅行', articles: [] },
-])
-const currentChannel = ref(channels.value[0].id)
-
-// 記事の状態
-const articles = ref([])
+const searchQuery = ref('')
 const showModal = ref(false)
 const editingIndex = ref(null)
 const currentArticle = ref({ title: '', content: '' })
-const searchQuery = ref('')
 
-// 初回マウント時にローカルストレージから読み込む
+const channels = ref([
+  { id: 1, name: '一般', articles: [] },
+  { id: 2, name: 'チャンネルB', articles: [] }
+])
+const currentChannel = ref(1)
+
+// ローカルストレージから読み込み
 onMounted(() => {
-  const saved = localStorage.getItem('articles')
+  const saved = localStorage.getItem('channels')
   if (saved) {
-    articles.value = JSON.parse(saved)
+    channels.value = JSON.parse(saved)
   }
 })
 
-// 記事が更新されるたびに保存
-watch(articles, (newVal) => {
-  localStorage.setItem('articles', JSON.stringify(newVal))
+// チャンネル更新時にローカルストレージへ保存
+watch(channels, (newVal) => {
+  localStorage.setItem('channels', JSON.stringify(newVal))
 }, { deep: true })
 
+// 現在のチャンネルのデータを取得
+const currentArticles = computed(() => {
+  const channel = channels.value.find(c => c.id === currentChannel.value)
+  return channel ? channel.articles : []
+})
+
+// 検索フィルタ処理（ひらがな対応）
+const toHiragana = (str) => {
+  return str.replace(/[\u30A1-\u30F6]/g, match =>
+    String.fromCharCode(match.charCodeAt(0) - 0x60)
+  )
+}
+
+const filteredArticles = computed(() => {
+  const query = toHiragana(searchQuery.value.toLowerCase())
+  return currentArticles.value.filter(article => {
+    const title = toHiragana(article.title.toLowerCase())
+    const content = toHiragana(article.content.toLowerCase())
+    return title.includes(query) || content.includes(query)
+  })
+})
+
+// モーダル関連処理
 const openAddModal = () => {
   currentArticle.value = { title: '', content: '' }
   editingIndex.value = null
   showModal.value = true
 }
+const openEditModal = (article) => {
+  const channel = channels.value.find(c => c.id === currentChannel.value)
+  if (!channel) return
 
-const openEditModal = (index) => {
-  currentArticle.value = { ...articles.value[index] }
+  const index = channel.articles.findIndex(a => a.id === article.id)
+  if (index === -1) return
+
+  currentArticle.value = { ...article }
   editingIndex.value = index
   showModal.value = true
 }
@@ -118,38 +148,35 @@ const closeModal = () => {
 
 // 記事の追加・編集
 const handleArticleSubmit = (article) => {
+  const channel = channels.value.find(c => c.id === currentChannel.value)
+  if (!channel) return
+
   if (editingIndex.value !== null) {
-    articles.value[editingIndex.value] = article
+    // 編集時は既存記事の id を保持したまま更新
+    article.id = channel.articles[editingIndex.value].id
+    channel.articles[editingIndex.value] = article
   } else {
-    articles.value.push(article)
+    // 新規追加時にユニークな id を付与
+    article.id = Date.now()
+    channel.articles.push(article)
   }
   closeModal()
 }
 
+
 // 記事の削除
-const removeArticle = (index) => {
-  articles.value.splice(index, 1)
+const removeArticle = (article) => {
+  const channel = channels.value.find(c => c.id === currentChannel.value)
+  if (!channel) return
+
+  const index = channel.articles.findIndex(a => a.id === article.id)
+  if (index !== -1) {
+    channel.articles.splice(index, 1)
+  }
 }
 
-// ひらがなに正規化する関数（カタカナ→ひらがな）
-const toHiragana = (str) => {
-  return str.replace(/[\u30A1-\u30F6]/g, match =>
-    String.fromCharCode(match.charCodeAt(0) - 0x60)
-  )
-}
 
-// 検索フィルター
-const filteredArticles = computed(() => {
-  // 検索クエリをひらがな＋小文字化して保持
-  const query = toHiragana(searchQuery.value.toLowerCase())
-  return articles.value.filter(article => {
-    const title = toHiragana(article.title.toLowerCase())
-    const content = toHiragana(article.content.toLowerCase())
-    return title.includes(query) || content.includes(query)
-  })
-})
-
-// チャンネルを追加
+// チャンネル関連処理
 const addChannel = () => {
   const name = prompt('新しいチャンネル名を入力してください')
   if (!name) return
@@ -157,14 +184,33 @@ const addChannel = () => {
   channels.value.push({ id, name, articles: [] })
   currentChannel.value = id
 }
-
-// チャンネルを切り替え
 const selectChannel = (id) => {
   currentChannel.value = id
   isSidebarOpen.value = false
 }
 
-// サイドバーの表示・非表示を切り替え
+
+// チャンネル削除処理
+const deleteChannel = (id) => {
+  if (!confirm('このチャンネルを削除しますか？')) return
+
+  const index = channels.value.findIndex(c => c.id === id)
+  if (index !== -1) {
+    channels.value.splice(index, 1)
+
+    // 削除したチャンネルが現在のチャンネルだった場合は切り替え
+    if (currentChannel.value === id) {
+      if (channels.value.length > 0) {
+        currentChannel.value = channels.value[0].id
+      } else {
+        currentChannel.value = null
+      }
+    }
+  }
+}
+
+
+// ハンバーガーメニュー
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
 }
