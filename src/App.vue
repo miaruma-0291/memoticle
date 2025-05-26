@@ -52,16 +52,19 @@
       </div>
 
       <!-- モーダルウィンドウ -->
-      <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-        <div class="modal-content">
-          <button @click="closeModal" class="close-btn">×</button>
-          <ArticleForm
-            :initialArticle="currentArticle"
-            :isEdit="editingIndex !== null"
-            @submitArticle="handleArticleSubmit"
-          />
+      <transition name="modal-fade">
+        <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+          <div class="modal-content">
+            <button @click="closeModal" class="close-btn">×</button>
+            <ArticleForm
+              :initialArticle="currentArticle"
+              :isEdit="editingIndex !== null"
+              @submitArticle="handleArticleSubmit"
+            />
+          </div>
         </div>
-      </div>
+      </transition>
+
 
       <ArticleList
         :articles="filteredArticles"
@@ -84,8 +87,7 @@ const editingIndex = ref(null)
 const currentArticle = ref({ title: '', content: '' })
 
 const channels = ref([
-  { id: 1, name: '一般', articles: [] },
-  { id: 2, name: 'チャンネルB', articles: [] }
+  { id: 1, name: '一般', articles: [] }
 ])
 const currentChannel = ref(1)
 
@@ -192,6 +194,12 @@ const selectChannel = (id) => {
 
 // チャンネル削除処理
 const deleteChannel = (id) => {
+  // チャンネルが1つだけなら削除を許可しない
+  if (channels.value.length <= 1) {
+    alert('これ以上チャンネルは削除できません。')
+    return
+  }
+
   if (!confirm('このチャンネルを削除しますか？')) return
 
   const index = channels.value.findIndex(c => c.id === id)
@@ -200,11 +208,7 @@ const deleteChannel = (id) => {
 
     // 削除したチャンネルが現在のチャンネルだった場合は切り替え
     if (currentChannel.value === id) {
-      if (channels.value.length > 0) {
-        currentChannel.value = channels.value[0].id
-      } else {
-        currentChannel.value = null
-      }
+      currentChannel.value = channels.value[0].id
     }
   }
 }

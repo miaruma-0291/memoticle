@@ -61,12 +61,15 @@ html {
     margin: 20px 0 0;
     font-size: 3rem;
     text-align: center;
+    letter-spacing: 5px;
+    font-family: 'Noto Serif JP Medium', serif;
   }
   
   @media (max-width: 767.98px) {
     .container h1 {
       margin: 25px 0 0;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
+      letter-spacing: 3px;
     }
   }
   
@@ -302,6 +305,43 @@ html {
     border-radius: 8px;
     min-width: 900px;
     position: relative;
+  }
+  
+  /* アニメーション全体の設定 */
+  .modal-fade-enter-active,
+  .modal-fade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  /* フェード用 */
+  .modal-fade-enter-from,
+  .modal-fade-leave-to {
+    opacity: 0;
+  }
+
+  /* スライド用 – 子要素にだけ適用（.modal-content） */
+  .modal-content {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* モーダル表示開始時のアニメーション */
+  .modal-fade-enter-from .modal-content {
+    transform: translateY(48px);
+    opacity: 0;
+  }
+  .modal-fade-enter-to .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* モーダル非表示時のアニメーション */
+  .modal-fade-leave-from .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .modal-fade-leave-to .modal-content {
+    transform: translateY(48px);
+    opacity: 0;
   }
 
   @media (max-width: 767.98px) {
